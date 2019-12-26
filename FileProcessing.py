@@ -5,6 +5,8 @@ The output contains each line of source and how many times have the occured in a
 '''
 import glob
 import csv
+import time
+#from re import search
 def main():
 	'''
 	Main function to be called in the python program.
@@ -19,7 +21,7 @@ def main():
 	Anomalypath = []
 	target_comp_files = []
 	#Open the input file
-	fin = open(input_file_path,'rb')
+	fin = open(input_file_path,'r')
 	#Read lines and store it in a variable 'input'
 	for item in fin:
 		Anomalypath.append(item)
@@ -36,13 +38,12 @@ def Fileprocessing(target_comp_files,inputfile_lines,output):
 	'''
 	Compare two list and output occurence of each item in list 1 in list 2 to a dictionary
 	'''
-
-	dictionarycompare_output = {}
+	dictout = {}
 	for item in target_comp_files:
 		target_path_list = []
 		print("Processing File: ", item)
 		#Open target file
-		ftarget = open(item,'rb')
+		ftarget = open(item,'r')
 		#Read lines in the file and store in a variable 'target#'
 		for line in ftarget:
 			target_path_list.append(line)
@@ -53,14 +54,24 @@ def Fileprocessing(target_comp_files,inputfile_lines,output):
 			#increment the count
 		#add line in 'input' to dictionary - line and count
 		for line in inputfile_lines:
+			#print("Source: ",line)
+			#time.sleep(1)
 			counter = 0
 			for target in target_path_list:
-				if item in target:
+				#print("target: ",target)
+				#time.sleep(1)
+				#print("Result: ",line in target)
+				#if line in target: #due to some reason I get false all the time
+				#if search(str(line),str(target)):
+				if target.find(line.strip()) !=-1:
+					#print(line)
+					#print(target)
 					counter += 1 
-			dictionarycompare_output[item] = counter
-	fout = open(output,'+a')
-	fout.write(item)
-	fout.write("\n")
+			dictout[line.strip()] = counter
+	fout = open(output,'+a',newline='')
+	#fout.write(item)
+	#fout.write("\n") 
+	#fout.write("\n") 
 	dic = csv.writer(fout)
 	#fout.write(dictout) cannot write dictionary using write function. This function writes only strings.
 	for key,val in dictout.items():
